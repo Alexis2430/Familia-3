@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Familia por Decisión</title>
+    <style>
+        :root {
+            --morado: #bc13fe;
+            --negro: #050505;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body, html {
+            height: 100%;
+            background-color: var(--negro);
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* VIDEO DE FONDO */
+        #bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        #bg-video {
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0.35; /* Un toque sutil para que el texto resalte */
+            filter: grayscale(1) sepia(1) hue-rotate(250deg) brightness(0.6); /* Tinte morado industrial */
+        }
+
+        /* CAPA DE COLOR */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(188, 19, 254, 0.05) 0%, rgba(5, 5, 5, 0.8) 100%);
+            z-index: -1;
+        }
+
+        main {
+            text-align: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 10vw, 4rem);
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            color: #fff;
+            text-shadow: 0 0 15px var(--morado), 0 0 40px var(--morado);
+            margin-bottom: 3.5rem;
+            animation: pulse 2.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.7; transform: scale(0.97); filter: blur(1px); }
+            to { opacity: 1; transform: scale(1); filter: blur(0px); }
+        }
+
+        .btn-tuki {
+            background: transparent;
+            color: var(--morado);
+            border: 3px solid var(--morado);
+            padding: 18px 60px;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+            position: relative;
+        }
+
+        .btn-tuki:hover {
+            background: var(--morado);
+            color: #fff;
+            box-shadow: 0 0 50px var(--morado);
+            transform: translateY(-8px);
+        }
+
+        .btn-tuki:active {
+            transform: scale(0.9);
+        }
+
+        /* SCANLINES RETRO */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.01), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.01));
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-container">
+        <!-- El archivo ahora es Gif.mp4 -->
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="Gif.mp4" type="video/mp4">
+        </video>
+    </div>
+    
+    <div class="overlay"></div>
+    <div class="scanlines"></div>
+
+    <main>
+        <h1>FAMILIA POR DECISIÓN</h1>
+        <button class="btn-tuki" onclick="playTuki()">Tuki</button>
+    </main>
+
+    <script>
+        function playTuki() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(450, audioCtx.currentTime + 0.12);
+
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.35);
+
+            setTimeout(() => {
+                window.location.href = "Menu.html";
+            }, 500);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Principal - La Banda</title>
+    <style>
+        :root {
+            --neon-purple: #bc13fe; /* Moradito riko */
+            --dark-bg: #050505;
+            --card-bg: rgba(20, 20, 20, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        header h2 {
+            font-size: 2.5rem;
+            color: var(--neon-purple);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            text-shadow: 0 0 15px var(--neon-purple), 0 0 30px var(--neon-purple);
+        }
+
+        /* GRID DE TARJETAS */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+            z-index: 10;
+        }
+
+        /* ESTILO DE TARJETA */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(188, 19, 254, 0.2);
+            padding: 40px 20px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 30px rgba(188, 19, 254, 0.4);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(188, 19, 254, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: 0.5s;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 8px var(--neon-purple));
+        }
+
+        .card-title {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+
+        .card:hover .card-title {
+            color: var(--neon-purple);
+            text-shadow: 0 0 10px var(--neon-purple);
+        }
+
+        /* EFECTO DE LÍNEAS DE FONDO */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%,
+                rgba(0, 0, 0, 0.25) 50%
+            ), linear-gradient(
+                90deg,
+                rgba(188, 19, 254, 0.02),
+                rgba(0, 0, 0, 0),
+                rgba(188, 19, 254, 0.02)
+            );
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* RESPONSIVO */
+        @media (max-width: 600px) {
+            header h2 { font-size: 1.5rem; }
+            .menu-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scanlines"></div>
+
+    <header>
+        <h2>PANEL DE CONTROL</h2>
+    </header>
+
+    <div class="menu-grid">
+        <a href="calendario.html" class="card">
+            <div class="card-icon">📅</div>
+            <div class="card-title">Calendario Especial</div>
+        </a>
+
+        <a href="galeria.html" class="card">
+            <div class="card-icon">🖼️</div>
+            <div class="card-title">Galería Compartida</div>
+        </a>
+
+        <a href="juegos.html" class="card">
+            <div class="card-icon">🎮</div>
+            <div class="card-title">Jueguitos para todos</div>
+        </a>
+
+        <a href="espacio.html" class="card">
+            <div class="card-icon">✍️</div>
+            <div class="card-title">Espacio Libre</div>
+        </a>
+
+        <a href="planes.html" class="card">
+            <div class="card-icon">🚀</div>
+            <div class="card-title">Planes Futuros</div>
+        </a>
+    </div>
+
+    <script>
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime); // Tono un poco más bajo para el morado
+                gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.1);
+            });
+        });
+    </script>
+</body>
+</html>
