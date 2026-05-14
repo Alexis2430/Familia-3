@@ -145,4 +145,592 @@
         }
     </script>
 </body>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Familia por Decisión</title>
+    <style>
+        :root {
+            --dorado: #ffca2c;
+            --dorado-brillante: #ffd700;
+            --negro: #050505;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body, html {
+            height: 100%;
+            background-color: var(--negro);
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* FONDO SOLO IMAGEN */
+        #bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('img/Fondo.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* CAPA DE TINTE DORADO */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 202, 44, 0.15) 0%, rgba(5, 5, 5, 0.85) 100%);
+            z-index: -1;
+        }
+
+        main {
+            text-align: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 10vw, 4rem);
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            color: #fff;
+            text-shadow: 0 0 15px var(--dorado), 0 0 30px var(--dorado-brillante);
+            margin-bottom: 3.5rem;
+            animation: pulse 3s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .btn-tuki {
+            background: transparent;
+            color: var(--dorado);
+            border: 3px solid var(--dorado);
+            padding: 18px 60px;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            outline: none;
+        }
+
+        .btn-tuki:hover {
+            background: var(--dorado);
+            color: #000;
+            box-shadow: 0 0 60px var(--dorado);
+            transform: translateY(-5px);
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-container"></div>
+    <div class="overlay"></div>
+    <div class="scanlines"></div>
+
+    <main>
+        <h1>FAMILIA POR DECISIÓN</h1>
+        <button class="btn-tuki" onclick="playTuki()">Tuki</button>
+    </main>
+
+    <script>
+        function playTuki() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'triangle'; 
+            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.1);
+
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+
+            setTimeout(() => {
+                window.location.href = "Menu.html";
+            }, 500);
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Familia por Decisión</title>
+    <style>
+        :root {
+            --dorado: #ffca2c;
+            --dorado-brillante: #ffd700;
+            --negro: #050505;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body, html {
+            height: 100%;
+            background-color: var(--negro);
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* FONDO SOLO IMAGEN */
+        #bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('img/Fondo.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* CAPA DE TINTE DORADO */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 202, 44, 0.15) 0%, rgba(5, 5, 5, 0.85) 100%);
+            z-index: -1;
+        }
+
+        main {
+            text-align: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 10vw, 4rem);
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            color: #fff;
+            text-shadow: 0 0 15px var(--dorado), 0 0 30px var(--dorado-brillante);
+            margin-bottom: 3.5rem;
+            animation: pulse 3s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .btn-tuki {
+            background: transparent;
+            color: var(--dorado);
+            border: 3px solid var(--dorado);
+            padding: 18px 60px;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            outline: none;
+        }
+
+        .btn-tuki:hover {
+            background: var(--dorado);
+            color: #000;
+            box-shadow: 0 0 60px var(--dorado);
+            transform: translateY(-5px);
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-container"></div>
+    <div class="overlay"></div>
+    <div class="scanlines"></div>
+
+    <main>
+        <h1>FAMILIA POR DECISIÓN</h1>
+        <button class="btn-tuki" onclick="playTuki()">Tuki</button>
+    </main>
+
+    <script>
+        function playTuki() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'triangle'; 
+            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.1);
+
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+
+            setTimeout(() => {
+                window.location.href = "Menu.html";
+            }, 500);
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Familia por Decisión</title>
+    <style>
+        :root {
+            --dorado: #ffca2c;
+            --dorado-brillante: #ffd700;
+            --negro: #050505;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body, html {
+            height: 100%;
+            background-color: var(--negro);
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* FONDO SOLO IMAGEN */
+        #bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('img/Fondo.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* CAPA DE TINTE DORADO */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 202, 44, 0.15) 0%, rgba(5, 5, 5, 0.85) 100%);
+            z-index: -1;
+        }
+
+        main {
+            text-align: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 10vw, 4rem);
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            color: #fff;
+            text-shadow: 0 0 15px var(--dorado), 0 0 30px var(--dorado-brillante);
+            margin-bottom: 3.5rem;
+            animation: pulse 3s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .btn-tuki {
+            background: transparent;
+            color: var(--dorado);
+            border: 3px solid var(--dorado);
+            padding: 18px 60px;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            outline: none;
+        }
+
+        .btn-tuki:hover {
+            background: var(--dorado);
+            color: #000;
+            box-shadow: 0 0 60px var(--dorado);
+            transform: translateY(-5px);
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-container"></div>
+    <div class="overlay"></div>
+    <div class="scanlines"></div>
+
+    <main>
+        <h1>FAMILIA POR DECISIÓN</h1>
+        <button class="btn-tuki" onclick="playTuki()">Tuki</button>
+    </main>
+
+    <script>
+        function playTuki() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'triangle'; 
+            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.1);
+
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+
+            setTimeout(() => {
+                window.location.href = "Menu.html";
+            }, 500);
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Familia por Decisión</title>
+    <style>
+        :root {
+            --dorado: #ffca2c;
+            --dorado-brillante: #ffd700;
+            --negro: #050505;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body, html {
+            height: 100%;
+            background-color: var(--negro);
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* FONDO SOLO IMAGEN */
+        #bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('img/Fondo.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* CAPA DE TINTE DORADO */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 202, 44, 0.15) 0%, rgba(5, 5, 5, 0.85) 100%);
+            z-index: -1;
+        }
+
+        main {
+            text-align: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 10vw, 4rem);
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            color: #fff;
+            text-shadow: 0 0 15px var(--dorado), 0 0 30px var(--dorado-brillante);
+            margin-bottom: 3.5rem;
+            animation: pulse 3s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .btn-tuki {
+            background: transparent;
+            color: var(--dorado);
+            border: 3px solid var(--dorado);
+            padding: 18px 60px;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            outline: none;
+        }
+
+        .btn-tuki:hover {
+            background: var(--dorado);
+            color: #000;
+            box-shadow: 0 0 60px var(--dorado);
+            transform: translateY(-5px);
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-container"></div>
+    <div class="overlay"></div>
+    <div class="scanlines"></div>
+
+    <main>
+        <h1>FAMILIA POR DECISIÓN</h1>
+        <button class="btn-tuki" onclick="playTuki()">Tuki</button>
+    </main>
+
+    <script>
+        function playTuki() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'triangle'; 
+            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.1);
+
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+
+            setTimeout(() => {
+                window.location.href = "Menu.html";
+            }, 500);
+        }
+    </script>
+</body>
 </html>
