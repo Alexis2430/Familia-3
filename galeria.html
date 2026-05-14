@@ -27,7 +27,7 @@
             <h1 class="text-2xl font-bold neon-text uppercase">Galería_Realtime</h1>
             <div class="flex gap-4">
                 <button onclick="document.getElementById('input-file').click()" class="bg-[#ffca2c] text-black px-4 py-2 font-bold text-xs uppercase hover:scale-105 transition-all">+ Subir Foto</button>
-                <button onclick="window.location.href='Menu.html'" class="border border-[#ffca2c] px-4 py-2 text-xs uppercase neon-text">Volver al Hub</button>
+                <button onclick="window.location.href='Menu.html'" class="border border-[#ffca2c] px-4 py-2 text-xs uppercase neon-text">Volver</button>
             </div>
             <input type="file" id="input-file" class="hidden" accept="image/*" onchange="subirFoto(this)">
         </header>
@@ -62,8 +62,8 @@
                     db.ref('fotos/' + newPhotoKey).set({
                         url: e.target.result,
                         fecha: new Date().toLocaleString()
-                    }).then(() => alert("¡Foto compartida con la banda!"))
-                      .catch(err => alert("Error paps: " + err.message));
+                    }).then(() => alert("¡Foto compartida con los tilinesios!"))
+                      .catch(err => alert("Error papito: " + err.message));
                 };
                 reader.readAsDataURL(file);
             }
