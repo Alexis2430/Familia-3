@@ -3,22 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galería VIP - Collage</title>
+    <title>Galería VIP - Recuerdos</title>
+    
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
-        :root { --dorado: #ffca2c; --negro: #050505; }
+        :root { 
+            --dorado: #ffca2c; 
+            --dorado-brillante: #ffd700;
+            --negro: #050505; 
+        }
+
         body { 
             background-color: var(--negro); 
             background-image: url('img/Fondo.png'); 
             background-size: cover; 
             background-attachment: fixed;
+            background-position: center;
             color: white; 
             font-family: 'Courier New', Courier, monospace; 
+            overflow-x: hidden;
         }
-        
-        /* Estilo Collage (Masonry) */
+
+        /* Estilo Collage Masonry (No corta las fotos) */
         .collage-grid {
             column-count: 1;
             column-gap: 15px;
@@ -30,37 +41,81 @@
             break-inside: avoid;
             margin-bottom: 15px;
             border: 1px solid rgba(255, 202, 44, 0.3);
-            background: black;
+            background: rgba(0, 0, 0, 0.8);
             position: relative;
             cursor: pointer;
-            transition: all 0.5s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
         }
 
-        /* Efecto Blanco y Negro Temporal */
+        .foto-card:hover {
+            border-color: var(--dorado);
+            box-shadow: 0 0 20px rgba(255, 202, 44, 0.3);
+            transform: translateY(-5px);
+        }
+
+        /* Efecto Blanco y Negro que vuelve a color */
         .foto-img {
             width: 100%;
-            height: auto; /* Para que la foto salga completa siempre */
+            height: auto;
             display: block;
-            filter: grayscale(100%); /* Inician en blanco y negro */
+            filter: grayscale(100%);
             transition: filter 0.8s ease;
         }
 
-        /* Al tocar o pasar el mouse recuperan color */
-        .foto-card:active .foto-img, 
-        .foto-card:hover .foto-img {
+        .foto-card:hover .foto-img, .foto-card:active .foto-img {
             filter: grayscale(0%);
         }
 
-        .neon-text { color: var(--dorado); text-shadow: 0 0 10px rgba(255, 202, 44, 0.5); }
+        /* Estética de la Alerta (Pop-up) */
+        .swal2-popup-custom {
+            background: rgba(5, 5, 5, 0.98) !important;
+            border: 2px solid var(--dorado) !important;
+            border-radius: 0 !important;
+            box-shadow: 0 0 30px rgba(255, 202, 44, 0.5) !important;
+        }
+        .swal2-title-custom {
+            color: var(--dorado) !important;
+            font-family: 'Courier New', Courier, monospace !important;
+            text-transform: uppercase !important;
+            letter-spacing: 2px !important;
+        }
+        .swal2-confirm-custom {
+            background-color: var(--dorado) !important;
+            color: black !important;
+            font-weight: bold !important;
+            border-radius: 0 !important;
+            text-transform: uppercase !important;
+            padding: 10px 30px !important;
+        }
+
+        .neon-text { 
+            color: var(--dorado); 
+            text-shadow: 0 0 10px rgba(255, 202, 44, 0.5); 
+        }
+
+        /* Barra de scroll dorada */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: var(--dorado); }
     </style>
 </head>
 <body>
-    <div id="app" class="min-h-screen bg-black/80 backdrop-blur-sm p-4">
-        <header class="max-w-6xl mx-auto border-b border-[#ffca2c]/30 pb-6 mb-8 flex justify-between items-center">
-            <h1 class="text-xl font-bold neon-text uppercase tracking-tighter">RECUERDOS_VIP</h1>
-            <div class="flex gap-2">
-                <button onclick="document.getElementById('input-file').click()" class="bg-[#ffca2c] text-black px-3 py-2 font-bold text-[10px] uppercase">+ FOTO</button>
-                <button onclick="window.location.href='Menu.html'" class="border border-[#ffca2c] px-3 py-2 text-[10px] uppercase neon-text">volver</button>
+    <div id="app" class="min-h-screen bg-black/70 backdrop-blur-md p-4">
+        <header class="max-w-6xl mx-auto border-b border-[#ffca2c]/30 pb-6 mb-10 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold neon-text uppercase tracking-tighter">RECUERDOS_VIP</h1>
+                <p class="text-[9px] opacity-40">SISTEMA DE ALMACENAMIENTO ETERNO // ONLINE</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="document.getElementById('input-file').click()" 
+                        class="bg-[#ffca2c] text-black px-4 py-2 font-bold text-[10px] uppercase hover:scale-105 transition-all shadow-[0_0_10px_rgba(255,202,44,0.5)]">
+                    + AÑADIR_FOTO
+                </button>
+                <button onclick="window.location.href='Menu.html'" 
+                        class="border border-[#ffca2c] px-4 py-2 text-[10px] uppercase neon-text hover:bg-[#ffca2c]/10 transition-all">
+                    VOLVER
+                </button>
             </div>
             <input type="file" id="input-file" class="hidden" accept="image/*" onchange="subirFoto(this)">
         </header>
@@ -70,6 +125,7 @@
     </div>
 
     <script>
+        // CONFIGURACIÓN DE TU FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyA4mkzPcHmoaS2p6DwK3TnDjqg6R7pw9zA",
             authDomain: "familia-vip.firebaseapp.com",
@@ -80,24 +136,57 @@
             databaseURL: "https://familia-vip-default-rtdb.firebaseio.com/"
         };
 
+        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // Función para subir fotos con alerta estética
         function subirFoto(input) {
             const file = input.files[0];
             if (file) {
+                // Alerta de carga
+                Swal.fire({
+                    title: 'ENCRIPTANDO...',
+                    text: 'Subiendo recuerdo a la memoria de Guinda.',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    customClass: { popup: 'swal2-popup-custom', title: 'swal2-title-custom' },
+                    didOpen: () => { Swal.showLoading(); }
+                });
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const newPhotoKey = db.ref().child('fotos').push().key;
                     db.ref('fotos/' + newPhotoKey).set({
                         url: e.target.result,
                         fecha: new Date().toLocaleString()
+                    }).then(() => {
+                        // Alerta de éxito con tu frase, paps
+                        Swal.fire({
+                            title: 'SISTEMA ACTUALIZADO',
+                            text: 'Recuerdo guardado para siempre.',
+                            icon: 'success',
+                            confirmButtonText: 'RECIBIDO',
+                            customClass: {
+                                popup: 'swal2-popup-custom',
+                                title: 'swal2-title-custom',
+                                confirmButton: 'swal2-confirm-custom'
+                            }
+                        });
+                    }).catch(error => {
+                        Swal.fire({
+                            title: 'ERROR_SISTEMA',
+                            text: error.message,
+                            icon: 'error',
+                            customClass: { popup: 'swal2-popup-custom', title: 'swal2-title-custom' }
+                        });
                     });
                 };
                 reader.readAsDataURL(file);
             }
         }
 
+        // Escuchar la base de datos y actualizar el collage
         db.ref('fotos').on('value', (snapshot) => {
             const grid = document.getElementById('galeria-grid');
             grid.innerHTML = "";
@@ -108,12 +197,15 @@
                     grid.innerHTML += `
                         <div class="foto-card">
                             <img src="${foto.url}" class="foto-img">
-                            <div class="p-2 text-[8px] flex justify-between bg-black/60">
+                            <div class="p-2 text-[8px] flex justify-between bg-black/60 border-t border-[#ffca2c]/10">
+                                <span class="neon-text opacity-70">DATA_RECUERDO</span>
                                 <span class="opacity-40">${foto.fecha}</span>
                             </div>
                         </div>
                     `;
                 });
+            } else {
+                grid.innerHTML = "<p class='col-span-full text-center opacity-30 italic'>No hay registros en la base de datos...</p>";
             }
         });
     </script>
