@@ -6,7 +6,8 @@
     <title>Familia por Decisión</title>
     <style>
         :root {
-            --morado: #bc13fe;
+            --dorado: #ffca2c;
+            --dorado-brillante: #ffd700;
             --negro: #050505;
         }
 
@@ -27,7 +28,7 @@
             align-items: center;
         }
 
-        /* VIDEO DE FONDO */
+        /* FONDO DE IMAGEN Y VIDEO */
         #bg-container {
             position: fixed;
             top: 0;
@@ -36,6 +37,9 @@
             height: 100%;
             z-index: -1;
             overflow: hidden;
+            background-image: url('img/Fondo.png');
+            background-size: cover;
+            background-position: center;
         }
 
         #bg-video {
@@ -48,18 +52,17 @@
             left: 50%;
             transform: translate(-50%, -50%);
             object-fit: cover;
-            opacity: 0.35; /* Un toque sutil para que el texto resalte */
-            filter: grayscale(1) sepia(1) hue-rotate(250deg) brightness(0.6); /* Tinte morado industrial */
+            opacity: 0.3; 
+            filter: grayscale(1) sepia(1) hue-rotate(10deg) brightness(0.7) contrast(1.2); 
         }
 
-        /* CAPA DE COLOR */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, rgba(188, 19, 254, 0.05) 0%, rgba(5, 5, 5, 0.8) 100%);
+            background: radial-gradient(circle, rgba(255, 202, 44, 0.1) 0%, rgba(5, 5, 5, 0.9) 100%);
             z-index: -1;
         }
 
@@ -74,51 +77,51 @@
             text-transform: uppercase;
             letter-spacing: 10px;
             color: #fff;
-            text-shadow: 0 0 15px var(--morado), 0 0 40px var(--morado);
+            text-shadow: 0 0 15px var(--dorado), 0 0 30px var(--dorado-brillante);
             margin-bottom: 3.5rem;
-            animation: pulse 2.5s infinite alternate;
+            animation: pulse 3s infinite alternate;
         }
 
         @keyframes pulse {
-            from { opacity: 0.7; transform: scale(0.97); filter: blur(1px); }
-            to { opacity: 1; transform: scale(1); filter: blur(0px); }
+            from { opacity: 0.8; transform: scale(0.98); filter: drop-shadow(0 0 5px var(--dorado)); }
+            to { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 20px var(--dorado-brillante)); }
         }
 
         .btn-tuki {
             background: transparent;
-            color: var(--morado);
-            border: 3px solid var(--morado);
+            color: var(--dorado);
+            border: 3px solid var(--dorado);
             padding: 18px 60px;
             font-size: 2rem;
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.4s ease;
-            box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+            border-radius: 4px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
             position: relative;
+            outline: none;
         }
 
         .btn-tuki:hover {
-            background: var(--morado);
-            color: #fff;
-            box-shadow: 0 0 50px var(--morado);
-            transform: translateY(-8px);
+            background: var(--dorado);
+            color: #000;
+            box-shadow: 0 0 60px var(--dorado);
+            transform: translateY(-5px) scale(1.05);
         }
 
         .btn-tuki:active {
-            transform: scale(0.9);
+            transform: scale(0.95);
         }
 
-        /* SCANLINES RETRO */
         .scanlines {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.01), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.01));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), 
+                        linear-gradient(90deg, rgba(255, 215, 0, 0.01), rgba(255, 215, 0, 0.01), rgba(255, 215, 0, 0.01));
             background-size: 100% 4px, 3px 100%;
             pointer-events: none;
             z-index: 20;
@@ -128,7 +131,6 @@
 <body>
 
     <div id="bg-container">
-        <!-- El archivo ahora es Gif.mp4 -->
         <video autoplay muted loop playsinline id="bg-video">
             <source src="Gif.mp4" type="video/mp4">
         </video>
@@ -148,18 +150,18 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
 
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(450, audioCtx.currentTime + 0.12);
+            osc.type = 'triangle'; 
+            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.1);
 
-            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
 
             osc.connect(gain);
             gain.connect(audioCtx.destination);
 
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.35);
+            osc.stop(audioCtx.currentTime + 0.3);
 
             setTimeout(() => {
                 window.location.href = "Menu.html";
