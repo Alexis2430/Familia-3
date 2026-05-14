@@ -2,129 +2,108 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Familia por Decisión</title>
     <style>
         :root {
             --dorado: #ffca2c;
-            --dorado-brillante: #ffd700;
             --negro: #050505;
         }
 
-        /* Reset básico para que nada estorbe */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Courier New', Courier, monospace;
-            -webkit-tap-highlight-color: transparent;
         }
 
-        body, html {
+        /* CONFIGURACIÓN DE FONDO DIRECTA */
+        body {
             width: 100%;
-            height: 100%;
+            min-height: 100vh;
             background-color: var(--negro);
-            color: #fff;
-            overflow: hidden;
+            /* Eliminamos capas intermedias y ponemos el fondo directo aquí */
+            background-image: url('img/Fondo.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            
             display: flex;
             justify-content: center;
             align-items: center;
+            color: #fff;
+            overflow: hidden;
         }
 
-        /* FONDO OPTIMIZADO */
-        #bg-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            height: -webkit-fill-available; /* Ajuste para Safari en iPhone */
-            z-index: -2;
-            background-image: url('img/Fondo.png');
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-color: var(--negro); /* Respaldo si falla la imagen */
-        }
-
-        /* CAPA PARA QUITAR EL CUADRADO NEGRO Y DAR ESTILO */
-        .overlay {
+        /* Capa ultra suave solo para que el texto no se pierda */
+        .filtro-suave {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            /* Gradiente más suave para que no se vea como mancha negra */
-            background: radial-gradient(circle, rgba(5, 5, 5, 0.4) 0%, rgba(5, 5, 5, 0.8) 100%);
-            z-index: -1;
+            background: rgba(0, 0, 0, 0.3); /* Solo 30% de oscuridad */
+            z-index: 1;
         }
 
         main {
-            text-align: center;
+            position: relative;
             z-index: 10;
-            width: 100%;
-            padding: 0 20px;
+            text-align: center;
+            padding: 20px;
+            /* Forzamos que NO tenga fondo */
+            background: transparent !important;
         }
 
         h1 {
-            font-size: clamp(1.8rem, 8vw, 3.5rem); /* Ajuste de tamaño dinámico */
+            font-size: clamp(2rem, 10vw, 4rem);
             text-transform: uppercase;
-            letter-spacing: 5px;
+            letter-spacing: 8px;
             color: #fff;
-            text-shadow: 0 0 10px var(--dorado), 0 0 20px var(--dorado-brillante);
+            /* Brillo dorado */
+            text-shadow: 0 0 15px var(--dorado), 2px 2px 4px rgba(0,0,0,0.8);
             margin-bottom: 3rem;
-            animation: pulse 3s infinite alternate;
-            line-height: 1.2;
+            background: transparent !important;
         }
 
-        @keyframes pulse {
-            from { opacity: 0.8; transform: scale(0.98); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* BOTÓN MÁS CHIDO PARA CEL */
         .btn-tuki {
-            background: transparent;
+            background: rgba(0, 0, 0, 0.6);
             color: var(--dorado);
-            border: 2px solid var(--dorado);
-            padding: 15px 40px;
-            font-size: clamp(1.2rem, 5vw, 1.8rem);
+            border: 3px solid var(--dorado);
+            padding: 15px 50px;
+            font-size: 1.8rem;
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
-            outline: none;
-            display: inline-block;
+            border-radius: 4px;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(255, 202, 44, 0.2);
         }
 
-        .btn-tuki:hover, .btn-tuki:active {
+        .btn-tuki:hover {
             background: var(--dorado);
             color: #000;
             box-shadow: 0 0 40px var(--dorado);
-            transform: scale(1.05);
         }
 
-        /* SCANLINES (Más finas para que no tapen en cel) */
+        /* Scanlines más transparentes */
         .scanlines {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 2px;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%);
+            background-size: 100% 4px;
             pointer-events: none;
-            z-index: 20;
-            opacity: 0.5;
+            z-index: 5;
         }
     </style>
 </head>
 <body>
 
-    <div id="bg-container"></div>
-    <div class="overlay"></div>
+    <div class="filtro-suave"></div>
     <div class="scanlines"></div>
 
     <main>
@@ -134,25 +113,19 @@
 
     <script>
         function playTuki() {
-            // Efecto de sonido
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-
-            osc.type = 'triangle'; 
-            osc.frequency.setValueAtTime(220, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.1);
-
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.1);
             gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-
             osc.connect(gain);
             gain.connect(audioCtx.destination);
-
             osc.start();
             osc.stop(audioCtx.currentTime + 0.3);
 
-            // Redirigir al Menú (asegúrate que el archivo se llame Menu.html exactamente)
             setTimeout(() => {
                 window.location.href = "Menu.html";
             }, 400);
