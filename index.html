@@ -28,7 +28,7 @@
             align-items: center;
         }
 
-        /* FONDO DE IMAGEN Y VIDEO */
+        /* FONDO SOLO IMAGEN */
         #bg-container {
             position: fixed;
             top: 0;
@@ -36,33 +36,20 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            overflow: hidden;
             background-image: url('img/Fondo.png');
             background-size: cover;
             background-position: center;
+            background-repeat: no-repeat;
         }
 
-        #bg-video {
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            object-fit: cover;
-            opacity: 0.3; 
-            filter: grayscale(1) sepia(1) hue-rotate(10deg) brightness(0.7) contrast(1.2); 
-        }
-
+        /* CAPA DE TINTE DORADO */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, rgba(255, 202, 44, 0.1) 0%, rgba(5, 5, 5, 0.9) 100%);
+            background: radial-gradient(circle, rgba(255, 202, 44, 0.15) 0%, rgba(5, 5, 5, 0.85) 100%);
             z-index: -1;
         }
 
@@ -83,8 +70,8 @@
         }
 
         @keyframes pulse {
-            from { opacity: 0.8; transform: scale(0.98); filter: drop-shadow(0 0 5px var(--dorado)); }
-            to { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 20px var(--dorado-brillante)); }
+            from { opacity: 0.8; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .btn-tuki {
@@ -97,9 +84,8 @@
             text-transform: uppercase;
             cursor: pointer;
             border-radius: 4px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s ease;
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-            position: relative;
             outline: none;
         }
 
@@ -107,11 +93,7 @@
             background: var(--dorado);
             color: #000;
             box-shadow: 0 0 60px var(--dorado);
-            transform: translateY(-5px) scale(1.05);
-        }
-
-        .btn-tuki:active {
-            transform: scale(0.95);
+            transform: translateY(-5px);
         }
 
         .scanlines {
@@ -120,9 +102,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), 
-                        linear-gradient(90deg, rgba(255, 215, 0, 0.01), rgba(255, 215, 0, 0.01), rgba(255, 215, 0, 0.01));
-            background-size: 100% 4px, 3px 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 4px;
             pointer-events: none;
             z-index: 20;
         }
@@ -130,12 +111,7 @@
 </head>
 <body>
 
-    <div id="bg-container">
-        <video autoplay muted loop playsinline id="bg-video">
-            <source src="Gif.mp4" type="video/mp4">
-        </video>
-    </div>
-    
+    <div id="bg-container"></div>
     <div class="overlay"></div>
     <div class="scanlines"></div>
 
