@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Principal - La Banda</title>
+    <title>Panel de Control - VIP</title>
     <style>
         :root {
-            --neon-purple: #bc13fe; /* Moradito riko */
+            --dorado: #ffca2c;
+            --dorado-glow: rgba(255, 202, 44, 0.4);
             --dark-bg: #050505;
-            --card-bg: rgba(20, 20, 20, 0.8);
+            --card-bg: rgba(10, 10, 10, 0.85);
         }
 
         * {
@@ -20,6 +21,11 @@
 
         body {
             background-color: var(--dark-bg);
+            /* Fondo consistente con el resto de la página */
+            background-image: url('img/Fondo.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: #fff;
             min-height: 100vh;
             display: flex;
@@ -29,36 +35,45 @@
             overflow-x: hidden;
         }
 
-        /* HEADER */
+        /* Capa de oscuridad para que el fondo no sature */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 0;
+        }
+
         header {
-            margin-bottom: 3rem;
+            margin-bottom: 3.5rem;
             text-align: center;
+            z-index: 10;
         }
 
         header h2 {
-            font-size: 2.5rem;
-            color: var(--neon-purple);
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            color: var(--dorado);
             text-transform: uppercase;
-            letter-spacing: 5px;
-            text-shadow: 0 0 15px var(--neon-purple), 0 0 30px var(--neon-purple);
+            letter-spacing: 8px;
+            text-shadow: 0 0 15px var(--dorado-glow), 0 0 30px var(--dorado-glow);
         }
 
-        /* GRID DE TARJETAS */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 25px;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1100px;
             z-index: 10;
         }
 
-        /* ESTILO DE TARJETA */
         .card {
             background: var(--card-bg);
-            border: 1px solid rgba(188, 19, 254, 0.2);
-            padding: 40px 20px;
-            border-radius: 15px;
+            border: 1px solid rgba(255, 202, 44, 0.2);
+            padding: 45px 25px;
             text-align: center;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -69,51 +84,42 @@
             align-items: center;
             justify-content: center;
             text-decoration: none;
+            backdrop-filter: blur(5px);
         }
 
         .card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: var(--neon-purple);
-            box-shadow: 0 0 30px rgba(188, 19, 254, 0.4);
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(188, 19, 254, 0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: 0.5s;
-        }
-
-        .card:hover::before {
-            opacity: 1;
+            transform: translateY(-8px);
+            border-color: var(--dorado);
+            box-shadow: 0 0 25px var(--dorado-glow);
+            background: rgba(20, 20, 20, 0.95);
         }
 
         .card-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 0 8px var(--neon-purple));
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px var(--dorado-glow));
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.1);
         }
 
         .card-title {
             color: #fff;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             transition: 0.3s;
         }
 
         .card:hover .card-title {
-            color: var(--neon-purple);
-            text-shadow: 0 0 10px var(--neon-purple);
+            color: var(--dorado);
+            text-shadow: 0 0 8px var(--dorado);
         }
 
-        /* EFECTO DE LÍNEAS DE FONDO */
+        /* Scanlines doradas muy tenues */
         .scanlines {
             position: fixed;
             top: 0;
@@ -122,21 +128,16 @@
             height: 100%;
             background: linear-gradient(
                 rgba(18, 16, 16, 0) 50%,
-                rgba(0, 0, 0, 0.25) 50%
-            ), linear-gradient(
-                90deg,
-                rgba(188, 19, 254, 0.02),
-                rgba(0, 0, 0, 0),
-                rgba(188, 19, 254, 0.02)
+                rgba(0, 0, 0, 0.1) 50%
             );
-            background-size: 100% 4px, 3px 100%;
+            background-size: 100% 4px;
             pointer-events: none;
             z-index: 100;
+            opacity: 0.5;
         }
 
-        /* RESPONSIVO */
         @media (max-width: 600px) {
-            header h2 { font-size: 1.5rem; }
+            header h2 { font-size: 1.8rem; letter-spacing: 4px; }
             .menu-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -146,33 +147,33 @@
     <div class="scanlines"></div>
 
     <header>
-        <h2>PANEL DE CONTROL</h2>
+        <h2>SISTEMA CENTRAL</h2>
     </header>
 
     <div class="menu-grid">
         <a href="calendario.html" class="card">
             <div class="card-icon">📅</div>
-            <div class="card-title">Calendario Especial</div>
+            <div class="card-title">Agenda Banda</div>
         </a>
 
-        <a href="galeria.html" class="card">
+        <a href="Galeria.html" class="card">
             <div class="card-icon">🖼️</div>
-            <div class="card-title">Galería Compartida</div>
+            <div class="card-title">Galería VIP</div>
         </a>
 
-        <a href="juegos.html" class="card">
-            <div class="card-icon">🎮</div>
-            <div class="card-title">Jueguitos para todos</div>
+        <a href="chat.html" class="card">
+            <div class="card-icon">💬</div>
+            <div class="card-title">Chat en Vivo</div>
         </a>
 
         <a href="espacio.html" class="card">
             <div class="card-icon">✍️</div>
-            <div class="card-title">Espacio Libre</div>
+            <div class="card-title">Bitácora</div>
         </a>
 
         <a href="planes.html" class="card">
             <div class="card-icon">🚀</div>
-            <div class="card-title">Planes Futuros</div>
+            <div class="card-title">Próximos Niveles</div>
         </a>
     </div>
 
@@ -184,8 +185,8 @@
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(150, audioCtx.currentTime); // Tono un poco más bajo para el morado
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(220, audioCtx.currentTime); 
                 gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
                 
