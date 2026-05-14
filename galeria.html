@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería Compartida - Familia</title>
+    <!-- Cargamos React y Tailwind desde CDN para que funcione sin instalar nada -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        body {
+            background-color: #050505;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .neon-border {
+            border: 2px solid #bc13fe;
+            box-shadow: 0 0 15px #bc13fe;
+        }
+        .neon-text {
+            color: #bc13fe;
+            text-shadow: 0 0 10px #bc13fe;
+        }
+        .neon-bg {
+            background-color: #bc13fe;
+            box-shadow: 0 0 20px #bc13fe;
+        }
+        /* Personalización de scroll */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #bc13fe; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // NOTA: Para que esto guarde fotos de verdad en GitHub, 
+        // necesitarías Firebase. Por ahora, haré que use LocalStorage
+        // para que tú y tu bro puedan ver cómo funciona en sus máquinas.
+
+        function App() {
+            const [photos, setPhotos] = useState([]);
+            const [showModal, setShowModal] = useState(false);
+            const [newPhotoUrl, setNewPhotoUrl] = useState('');
+
+            // Cargar fotos guardadas al iniciar
+            useEffect(() => {
+                const savedPhotos = JSON.parse(localStorage.getItem('familia_photos') || '[]');
+                setPhotos(savedPhotos);
+            }, []);
+
+            const savePhotos = (updatedPhotos) => {
+                setPhotos(updatedPhotos);
+                localStorage.setItem('familia_photos', JSON.stringify(updatedPhotos));
+            };
+
+            const handleUpload = (e) => {
+                e.preventDefault();
+                if (!newPhotoUrl) return;
+                
+                const newPhoto = {
+                    id: Date.now(),
+                    url: newPhotoUrl,
+                    date: new Date().toLocaleDateString()
+                };
+                
+                savePhotos([newPhoto, ...photos]);
+                setNewPhotoUrl('');
+                setShowModal(false);
+            };
+
+            const handleFile = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => setNewPhotoUrl(reader.result);
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            return (
+                <div className="min-h-screen p-6">
+                    <header className="max-w-5xl mx-auto flex justify-between items-center mb-10 border-b border-[#bc13fe] pb-6">
+                        <h1 className="text-3xl font-black neon-text uppercase tracking-widest">
+                            Galería_Compartida
+                        </h1>
+                        <button 
+                            onClick={() => setShowModal(true)}
+                            className="neon-bg text-black px-6 py-2 font-bold hover:scale-105 transition-transform"
+                        >
+                            + SUBIR
+                        </button>
+                    </header>
+
+                    <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {photos.length === 0 && (
+                            <p className="col-span-full text-center opacity-50 italic py-20">
+                                No hay fotos aún. Sube la primera, paps.
+                            </p>
+                        )}
+                        {photos.map(photo => (
+                            <div key={photo.id} className="group relative overflow-hidden rounded-lg neon-border bg-black">
+                                <img 
+                                    src={photo.url} 
+                                    className="w-full h-72 object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                    alt="Foto familia"
+                                />
+                                <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/80 translate-y-full group-hover:translate-y-0 transition-transform">
+                                    <p className="text-[10px] neon-text">FECHA: {photo.date}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {showModal && (
+                        <div className="fixed inset-0 bg-black/95 flex justify-center items-center z-50 p-4">
+                            <div className="bg-[#111] border-2 border-[#bc13fe] p-8 rounded-lg w-full max-w-md">
+                                <h2 className="neon-text text-xl font-bold mb-6">NUEVO RECUERDO</h2>
+                                <form onSubmit={handleUpload} className="space-y-6">
+                                    <input 
+                                        type="text" 
+                                        placeholder="URL de la imagen..."
+                                        value={newPhotoUrl}
+                                        onChange={(e) => setNewPhotoUrl(e.target.value)}
+                                        className="w-full bg-black border border-[#bc13fe]/50 p-3 text-white focus:border-[#bc13fe] outline-none"
+                                    />
+                                    <div className="text-center text-xs opacity-50">O SELECCIONA ARCHIVO</div>
+                                    <input 
+                                        type="file" 
+                                        accept="image/*"
+                                        onChange={handleFile}
+                                        className="w-full text-xs"
+                                    />
+                                    <div className="flex gap-4">
+                                        <button 
+                                            type="button"
+                                            onClick={() => setShowModal(false)}
+                                            className="flex-1 py-2 border border-red-600 text-red-600 font-bold hover:bg-red-600 hover:text-white"
+                                        >
+                                            SALIR
+                                        </button>
+                                        <button 
+                                            type="submit"
+                                            className="flex-1 py-2 neon-bg text-black font-bold"
+                                        >
+                                            SUBIR
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+
+                    <footer className="text-center mt-20">
+                        <button 
+                            onClick={() => window.location.href = 'Menu.html'}
+                            className="neon-text text-sm hover:underline"
+                        >
+                            [ VOLVER AL MENÚ ]
+                        </button>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
