@@ -3,174 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galería Compartida - Familia</title>
-    <!-- Cargamos React y Tailwind desde CDN para que funcione sin instalar nada -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <title>Galería Compartida - VIP</title>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <style>
-        body {
-            background-color: #050505;
-            color: white;
-            font-family: 'Courier New', Courier, monospace;
+        :root { --dorado: #ffca2c; --negro: #050505; }
+        body { 
+            background-color: var(--negro); 
+            background-image: url('img/Fondo.png'); 
+            background-size: cover; 
+            background-attachment: fixed;
+            color: white; 
+            font-family: 'Courier New', Courier, monospace; 
         }
-        .neon-border {
-            border: 2px solid #bc13fe;
-            box-shadow: 0 0 15px #bc13fe;
-        }
-        .neon-text {
-            color: #bc13fe;
-            text-shadow: 0 0 10px #bc13fe;
-        }
-        .neon-bg {
-            background-color: #bc13fe;
-            box-shadow: 0 0 20px #bc13fe;
-        }
-        /* Personalización de scroll */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #bc13fe; border-radius: 10px; }
+        .neon-border { border: 1px solid var(--dorado); box-shadow: 0 0 15px rgba(255, 202, 44, 0.2); }
+        .neon-text { color: var(--dorado); text-shadow: 0 0 10px rgba(255, 202, 44, 0.5); }
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="app" class="min-h-screen bg-black/80 backdrop-blur-sm p-5">
+        <header class="max-w-6xl mx-auto border-b border-[#ffca2c]/30 pb-6 mb-10 flex justify-between items-center">
+            <h1 class="text-2xl font-bold neon-text uppercase">Galería_Realtime</h1>
+            <div class="flex gap-4">
+                <button onclick="document.getElementById('input-file').click()" class="bg-[#ffca2c] text-black px-4 py-2 font-bold text-xs uppercase hover:scale-105 transition-all">+ Subir Foto</button>
+                <button onclick="window.location.href='Menu.html'" class="border border-[#ffca2c] px-4 py-2 text-xs uppercase neon-text">Volver al Hub</button>
+            </div>
+            <input type="file" id="input-file" class="hidden" accept="image/*" onchange="subirFoto(this)">
+        </header>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+        <div id="galeria-grid" class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+    </div>
 
-        // NOTA: Para que esto guarde fotos de verdad en GitHub, 
-        // necesitarías Firebase. Por ahora, haré que use LocalStorage
-        // para que tú y tu bro puedan ver cómo funciona en sus máquinas.
+    <script>
+        // --- TUS DATOS REALES DE FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4mkzPcHmoaS2p6DwK3TnDjqg6R7pw9zA",
+            authDomain: "familia-vip.firebaseapp.com",
+            projectId: "familia-vip",
+            storageBucket: "familia-vip.firebasestorage.app",
+            messagingSenderId: "1085714188192",
+            appId: "1:1085714188192:web:3c7f3a4d5a58c18d4ac6c5",
+            databaseURL: "https://familia-vip-default-rtdb.firebaseio.com/" // Verifica este link en tu consola de Firebase
+        };
 
-        function App() {
-            const [photos, setPhotos] = useState([]);
-            const [showModal, setShowModal] = useState(false);
-            const [newPhotoUrl, setNewPhotoUrl] = useState('');
+        // Inicializar
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-            // Cargar fotos guardadas al iniciar
-            useEffect(() => {
-                const savedPhotos = JSON.parse(localStorage.getItem('familia_photos') || '[]');
-                setPhotos(savedPhotos);
-            }, []);
-
-            const savePhotos = (updatedPhotos) => {
-                setPhotos(updatedPhotos);
-                localStorage.setItem('familia_photos', JSON.stringify(updatedPhotos));
-            };
-
-            const handleUpload = (e) => {
-                e.preventDefault();
-                if (!newPhotoUrl) return;
-                
-                const newPhoto = {
-                    id: Date.now(),
-                    url: newPhotoUrl,
-                    date: new Date().toLocaleDateString()
+        // Función para subir fotos
+        function subirFoto(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newPhotoKey = db.ref().child('fotos').push().key;
+                    db.ref('fotos/' + newPhotoKey).set({
+                        url: e.target.result,
+                        fecha: new Date().toLocaleString()
+                    }).then(() => alert("¡Foto compartida con la banda!"))
+                      .catch(err => alert("Error paps: " + err.message));
                 };
-                
-                savePhotos([newPhoto, ...photos]);
-                setNewPhotoUrl('');
-                setShowModal(false);
-            };
-
-            const handleFile = (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onloadend = () => setNewPhotoUrl(reader.result);
-                    reader.readAsDataURL(file);
-                }
-            };
-
-            return (
-                <div className="min-h-screen p-6">
-                    <header className="max-w-5xl mx-auto flex justify-between items-center mb-10 border-b border-[#bc13fe] pb-6">
-                        <h1 className="text-3xl font-black neon-text uppercase tracking-widest">
-                            Galería_Compartida
-                        </h1>
-                        <button 
-                            onClick={() => setShowModal(true)}
-                            className="neon-bg text-black px-6 py-2 font-bold hover:scale-105 transition-transform"
-                        >
-                            + SUBIR
-                        </button>
-                    </header>
-
-                    <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {photos.length === 0 && (
-                            <p className="col-span-full text-center opacity-50 italic py-20">
-                                No hay fotos aún. Sube la primera, paps.
-                            </p>
-                        )}
-                        {photos.map(photo => (
-                            <div key={photo.id} className="group relative overflow-hidden rounded-lg neon-border bg-black">
-                                <img 
-                                    src={photo.url} 
-                                    className="w-full h-72 object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-                                    alt="Foto familia"
-                                />
-                                <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/80 translate-y-full group-hover:translate-y-0 transition-transform">
-                                    <p className="text-[10px] neon-text">FECHA: {photo.date}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {showModal && (
-                        <div className="fixed inset-0 bg-black/95 flex justify-center items-center z-50 p-4">
-                            <div className="bg-[#111] border-2 border-[#bc13fe] p-8 rounded-lg w-full max-w-md">
-                                <h2 className="neon-text text-xl font-bold mb-6">NUEVO RECUERDO</h2>
-                                <form onSubmit={handleUpload} className="space-y-6">
-                                    <input 
-                                        type="text" 
-                                        placeholder="URL de la imagen..."
-                                        value={newPhotoUrl}
-                                        onChange={(e) => setNewPhotoUrl(e.target.value)}
-                                        className="w-full bg-black border border-[#bc13fe]/50 p-3 text-white focus:border-[#bc13fe] outline-none"
-                                    />
-                                    <div className="text-center text-xs opacity-50">O SELECCIONA ARCHIVO</div>
-                                    <input 
-                                        type="file" 
-                                        accept="image/*"
-                                        onChange={handleFile}
-                                        className="w-full text-xs"
-                                    />
-                                    <div className="flex gap-4">
-                                        <button 
-                                            type="button"
-                                            onClick={() => setShowModal(false)}
-                                            className="flex-1 py-2 border border-red-600 text-red-600 font-bold hover:bg-red-600 hover:text-white"
-                                        >
-                                            SALIR
-                                        </button>
-                                        <button 
-                                            type="submit"
-                                            className="flex-1 py-2 neon-bg text-black font-bold"
-                                        >
-                                            SUBIR
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    )}
-
-                    <footer className="text-center mt-20">
-                        <button 
-                            onClick={() => window.location.href = 'Menu.html'}
-                            className="neon-text text-sm hover:underline"
-                        >
-                            [ VOLVER AL MENÚ ]
-                        </button>
-                    </footer>
-                </div>
-            );
+                reader.readAsDataURL(file);
+            }
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        // Mostrar fotos en tiempo real
+        db.ref('fotos').on('value', (snapshot) => {
+            const grid = document.getElementById('galeria-grid');
+            grid.innerHTML = "";
+            const data = snapshot.val();
+            
+            if (data) {
+                Object.values(data).reverse().forEach(foto => {
+                    grid.innerHTML += `
+                        <div class="neon-border bg-black overflow-hidden">
+                            <img src="${foto.url}" class="w-full h-64 object-cover">
+                            <div class="p-2 text-[9px] flex justify-between opacity-50">
+                                <span>RECUERDO_VIP</span>
+                                <span>${foto.fecha}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                grid.innerHTML = "<p class='col-span-full text-center opacity-30'>No hay fotos todavía...</p>";
+            }
+        });
     </script>
 </body>
 </html>
