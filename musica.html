@@ -3,96 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP Music OS - Independiente</title>
+    <title>VIP Audio Experience</title>
     <script src="https://www.youtube.com/iframe_api"></script>
     <style>
-        :root { --dorado: #ffca2c; --negro: #050505; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; }
+        :root { --accent: #ffca2c; --bg: #000000; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        body {
-            background: var(--negro) url('img/Fondo.png') center/cover fixed;
-            color: white; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
-        }
-        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 0; }
+        body { background-color: var(--bg); color: white; min-height: 100vh; overflow: hidden; transition: background 1s ease; }
 
-        .player-shell {
-            position: relative; z-index: 10; width: 100%; max-width: 500px;
-            background: #111; border: 1px solid var(--dorado); padding: 30px;
-            box-shadow: 0 0 50px rgba(255, 202, 44, 0.1);
+        /* Contenedor Principal */
+        .player-wrapper { 
+            display: grid; grid-template-columns: 1fr 1fr; height: 100vh; padding: 40px; gap: 40px; 
+            background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
         }
 
-        .system-header { border-bottom: 1px solid #333; margin-bottom: 20px; display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--dorado); padding-bottom: 5px; }
-
-        /* Buscador */
-        .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-box input { 
-            flex: 1; background: #000; border: 1px solid #444; color: var(--dorado); 
-            padding: 10px; font-size: 0.8rem; outline: none;
-        }
-        .search-box input:focus { border-color: var(--dorado); }
-        .btn-load { background: var(--dorado); color: #000; border: none; padding: 10px 15px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
-
-        /* Pantalla de Reproducción */
-        .screen-display { 
-            background: #000; border: 1px solid #222; height: 120px; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            margin-bottom: 20px; position: relative;
-        }
-        #yt-player-hidden { position: absolute; opacity: 0; pointer-events: none; }
+        /* Lado Izquierdo: Portada y Controles */
+        .visual-side { display: flex; flex-direction: column; justify-content: center; align-items: center; }
         
-        .visualizer { display: flex; align-items: flex-end; gap: 3px; height: 30px; margin-top: 10px; }
-        .v-bar { width: 4px; background: var(--dorado); animation: wave 0.6s infinite alternate; }
-
-        @keyframes wave { from { height: 4px; } to { height: 25px; } }
-
-        .controls-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
-        .btn-main { 
-            background: transparent; border: 1px solid var(--dorado); color: var(--dorado); 
-            padding: 15px; cursor: pointer; transition: 0.3s; font-weight: bold;
+        .cover-art { 
+            width: 350px; height: 350px; border-radius: 20px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+            background-size: cover; background-position: center;
+            transition: all 0.5s ease; border: 1px solid rgba(255,255,255,0.1);
         }
-        .btn-main:hover { background: var(--dorado); color: black; box-shadow: 0 0 15px var(--dorado); }
 
-        .footer-nav { margin-top: 30px; text-align: center; border-top: 1px solid #333; padding-top: 15px; }
-        .back-link { color: var(--dorado); text-decoration: none; font-size: 0.7rem; opacity: 0.6; }
+        .song-info { margin-top: 30px; text-align: left; width: 350px; }
+        .song-info h1 { font-size: 2rem; color: #fff; }
+        .song-info p { color: var(--accent); opacity: 0.8; font-weight: bold; }
+
+        /* Ecualizador Reactivo (Simulado) */
+        .eq-container { display: flex; gap: 4px; height: 30px; margin-top: 20px; }
+        .eq-bar { width: 4px; background: var(--accent); animation: eq 0.4s infinite alternate; }
+
+        /* Lado Derecho: Letras */
+        .lyrics-side { 
+            overflow-y: auto; display: flex; flex-direction: column; 
+            justify-content: flex-start; padding-right: 20px; mask-image: linear-gradient(transparent, white 20%, white 80%, transparent);
+        }
+        .lyrics-side::-webkit-scrollbar { display: none; }
+        
+        .lyric-line { 
+            font-size: 2.2rem; font-weight: 800; margin-bottom: 20px; opacity: 0.2; 
+            transition: all 0.4s ease; cursor: pointer; line-height: 1.2;
+        }
+        .lyric-line.active { opacity: 1; color: var(--accent); transform: scale(1.05); text-shadow: 0 0 20px var(--accent); }
+
+        /* Barra de Progreso y Botones */
+        .controls-footer { position: fixed; bottom: 0; left: 0; width: 100%; padding: 20px 40px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
+        .progress-area { width: 100%; display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+        .bar-bg { flex: 1; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative; cursor: pointer; }
+        .bar-fill { width: 0%; height: 100%; background: var(--accent); border-radius: 3px; box-shadow: 0 0 10px var(--accent); }
+        
+        .buttons { display: flex; justify-content: center; gap: 30px; align-items: center; }
+        .btn { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; transition: 0.3s; }
+        .btn:hover { color: var(--accent); transform: scale(1.2); }
+        .btn-play { background: white; color: black; width: 50px; height: 50px; border-radius: 50%; font-size: 1.2rem; }
+
+        @keyframes eq { from { height: 5px; } to { height: 30px; } }
+        
+        /* Ocultar Player de YT */
+        #yt-hidden { position: absolute; left: -9999px; }
     </style>
 </head>
 <body>
 
-    <div id="yt-player-hidden"></div>
+    <div id="yt-hidden"></div>
 
-    <div class="player-shell">
-        <div class="system-header">
-            <span>MODO: LIBRE_Y_TOTAL</span>
-            <span id="status-text">ESPERANDO ENTRADA...</span>
-        </div>
-
-        <div class="search-box">
-            <input type="text" id="url-input" placeholder="Pega link de YouTube aquí...">
-            <button class="btn-load" onclick="loadFromUrl()">CARGAR</button>
-        </div>
-
-        <div class="screen-display">
-            <div id="song-info" style="text-align: center;">
-                <p id="track-name" style="font-size: 1rem; color: var(--dorado);">SISTEMA_STANDBY</p>
-                <p id="track-status" style="font-size: 0.6rem; opacity: 0.5;">INGRESA UNA URL PARA EMPEZAR</p>
+    <div class="player-wrapper" id="main-bg">
+        <div class="visual-side">
+            <div class="cover-art" id="cover" style="background-image: url('https://img.youtube.com/vi/VwM2reI_D_g/maxresdefault.jpg');"></div>
+            <div class="song-info">
+                <h1 id="track-title">CONECTANDO SISTEMA</h1>
+                <p id="track-artist">INGRESA LINK DE YOUTUBE</p>
+                <div class="eq-container">
+                    <div class="eq-bar" style="animation-delay: 0.1s"></div>
+                    <div class="eq-bar" style="animation-delay: 0.3s"></div>
+                    <div class="eq-bar" style="animation-delay: 0.2s"></div>
+                    <div class="eq-bar" style="animation-delay: 0.4s"></div>
+                </div>
             </div>
-            <div class="visualizer" id="viz" style="display: none;">
-                <div class="v-bar" style="animation-delay: 0.1s"></div>
-                <div class="v-bar" style="animation-delay: 0.3s"></div>
-                <div class="v-bar" style="animation-delay: 0.2s"></div>
-                <div class="v-bar" style="animation-delay: 0.4s"></div>
-                <div class="v-bar" style="animation-delay: 0.1s"></div>
+            
+            <input type="text" id="url-in" placeholder="Pega Link Aquí" style="margin-top: 20px; background: none; border: 1px solid var(--accent); color: white; padding: 10px; border-radius: 5px;">
+            <button onclick="loadSong()" style="margin-top: 10px; color: var(--accent); background: none; border: none; cursor: pointer;">[ CARGAR NÚCLEO ]</button>
+        </div>
+
+        <div class="lyrics-side" id="lyrics-container">
+            <p class="lyric-line" data-time="0">Bienvenido al Sistema</p>
+            <p class="lyric-line" data-time="5">Selecciona tu música</p>
+            <p class="lyric-line" data-time="10">VIP Experience</p>
+        </div>
+    </div>
+
+    <div class="controls-footer">
+        <div class="progress-area">
+            <span id="cur-time">0:00</span>
+            <div class="bar-bg" onclick="seek(event)">
+                <div class="bar-fill" id="progress"></div>
             </div>
+            <span id="dur-time">0:00</span>
         </div>
-
-        <div class="controls-grid">
-            <button class="btn-main" onclick="player.seekTo(player.getCurrentTime() - 10)">-10s</button>
-            <button class="btn-main" id="play-pause" onclick="togglePlayback()">PLAY</button>
-            <button class="btn-main" onclick="player.seekTo(player.getCurrentTime() + 10)">+10s</button>
-        </div>
-
-        <div class="footer-nav">
-            <a href="Menu.html" class="back-link">[ REGRESAR AL SISTEMA ]</a>
+        <div class="buttons">
+            <button class="btn">⏮</button>
+            <button class="btn btn-play" id="play-btn" onclick="togglePlay()">▶</button>
+            <button class="btn">⏭</button>
+            <button class="btn" onclick="window.location.href='Menu.html'">✖</button>
         </div>
     </div>
 
@@ -101,54 +115,62 @@
         let isPlaying = false;
 
         function onYouTubeIframeAPIReady() {
-            player = new YT.Player('yt-player-hidden', {
+            player = new YT.Player('yt-hidden', {
                 height: '0', width: '0',
-                events: {
-                    'onStateChange': onPlayerStateChange,
-                    'onError': () => { alert("Error al cargar el video, paps."); }
-                }
+                events: { 'onStateChange': onStateChange }
             });
         }
 
-        function loadFromUrl() {
-            const url = document.getElementById('url-input').value;
-            const videoId = extractVideoID(url);
-            
-            if (videoId) {
-                player.loadVideoById(videoId);
-                document.getElementById('track-name').innerText = "CONECTANDO...";
-                document.getElementById('viz').style.display = 'flex';
-                document.getElementById('status-text').innerText = "STREAMING...";
-            } else {
-                alert("Ese no es un link de YouTube válido, bro.");
+        function loadSong() {
+            const url = document.getElementById('url-in').value;
+            const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
+            if(id) {
+                player.loadVideoById(id);
+                document.getElementById('cover').style.background-image = `url('https://img.youtube.com/vi/${id}/maxresdefault.jpg')`;
+                // Aquí podrías cambiar el color --accent basado en la canción
             }
         }
 
-        function extractVideoID(url) {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length == 11) ? match[2] : null;
-        }
-
-        function togglePlayback() {
-            if (isPlaying) {
-                player.pauseVideo();
-                document.getElementById('play-pause').innerText = "PLAY";
-            } else {
-                player.playVideo();
-                document.getElementById('play-pause').innerText = "PAUSE";
-            }
+        function togglePlay() {
+            if(isPlaying) { player.pauseVideo(); document.getElementById('play-btn').innerText = "▶"; }
+            else { player.playVideo(); document.getElementById('play-btn').innerText = "||"; }
             isPlaying = !isPlaying;
         }
 
-        function onPlayerStateChange(event) {
-            if (event.data == YT.PlayerState.PLAYING) {
-                const videoData = player.getVideoData();
-                document.getElementById('track-name').innerText = videoData.title;
-                document.getElementById('track-status').innerText = "REPRODUCIENDO AHORA";
-                document.getElementById('play-pause').innerText = "PAUSE";
-                isPlaying = true;
+        function onStateChange(event) {
+            if(event.data == YT.PlayerState.PLAYING) {
+                const data = player.getVideoData();
+                document.getElementById('track-title').innerText = data.title;
+                document.getElementById('track-artist').innerText = data.author;
+                updateLyrics();
             }
+        }
+
+        // Lógica de Letras y Progreso
+        setInterval(() => {
+            if(player && player.getCurrentTime) {
+                const cur = player.getCurrentTime();
+                const dur = player.getDuration();
+                document.getElementById('progress').style.width = (cur/dur*100) + "%";
+                document.getElementById('cur-time').innerText = formatTime(cur);
+                document.getElementById('dur-time').innerText = formatTime(dur);
+                
+                // Sincronizar letras
+                const lines = document.querySelectorAll('.lyric-line');
+                lines.forEach(line => {
+                    if(cur >= line.getAttribute('data-time')) {
+                        lines.forEach(l => l.classList.remove('active'));
+                        line.classList.add('active');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            }
+        }, 500);
+
+        function formatTime(s) {
+            const m = Math.floor(s/60);
+            const sec = Math.floor(s%60);
+            return `${m}:${sec < 10 ? '0' : ''}${sec}`;
         }
     </script>
 </body>
