@@ -3,175 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP Audio Experience</title>
-    <script src="https://www.youtube.com/iframe_api"></script>
+    <title>VIP Spotify Experience</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vibrant.js/2.1.0/Vibrant.min.js"></script>
     <style>
-        :root { --accent: #ffca2c; --bg: #000000; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        body { background-color: var(--bg); color: white; min-height: 100vh; overflow: hidden; transition: background 1s ease; }
-
-        /* Contenedor Principal */
-        .player-wrapper { 
-            display: grid; grid-template-columns: 1fr 1fr; height: 100vh; padding: 40px; gap: 40px; 
-            background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
+        :root {
+            --accent: #ffca2c; /* Color inicial */
+            --bg-dark: #000000;
         }
 
-        /* Lado Izquierdo: Portada y Controles */
-        .visual-side { display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        
-        .cover-art { 
-            width: 350px; height: 350px; border-radius: 20px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
-            background-size: cover; background-position: center;
-            transition: all 0.5s ease; border: 1px solid rgba(255,255,255,0.1);
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--bg-dark);
+            /* Gradiente que cambia con el acento */
+            background: radial-gradient(circle at 50% 0%, var(--accent) -80%, var(--bg-dark) 70%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background 1.5s ease;
+            overflow: hidden;
         }
 
-        .song-info { margin-top: 30px; text-align: left; width: 350px; }
-        .song-info h1 { font-size: 2rem; color: #fff; }
-        .song-info p { color: var(--accent); opacity: 0.8; font-weight: bold; }
-
-        /* Ecualizador Reactivo (Simulado) */
-        .eq-container { display: flex; gap: 4px; height: 30px; margin-top: 20px; }
-        .eq-bar { width: 4px; background: var(--accent); animation: eq 0.4s infinite alternate; }
-
-        /* Lado Derecho: Letras */
-        .lyrics-side { 
-            overflow-y: auto; display: flex; flex-direction: column; 
-            justify-content: flex-start; padding-right: 20px; mask-image: linear-gradient(transparent, white 20%, white 80%, transparent);
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+            padding: 40px;
+            z-index: 10;
         }
-        .lyrics-side::-webkit-scrollbar { display: none; }
-        
-        .lyric-line { 
-            font-size: 2.2rem; font-weight: 800; margin-bottom: 20px; opacity: 0.2; 
-            transition: all 0.4s ease; cursor: pointer; line-height: 1.2;
+
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
         }
-        .lyric-line.active { opacity: 1; color: var(--accent); transform: scale(1.05); text-shadow: 0 0 20px var(--accent); }
 
-        /* Barra de Progreso y Botones */
-        .controls-footer { position: fixed; bottom: 0; left: 0; width: 100%; padding: 20px 40px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
-        .progress-area { width: 100%; display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
-        .bar-bg { flex: 1; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative; cursor: pointer; }
-        .bar-fill { width: 0%; height: 100%; background: var(--accent); border-radius: 3px; box-shadow: 0 0 10px var(--accent); }
-        
-        .buttons { display: flex; justify-content: center; gap: 30px; align-items: center; }
-        .btn { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; transition: 0.3s; }
-        .btn:hover { color: var(--accent); transform: scale(1.2); }
-        .btn-play { background: white; color: black; width: 50px; height: 50px; border-radius: 50%; font-size: 1.2rem; }
+        .header h2 {
+            font-size: 0.7rem;
+            letter-spacing: 5px;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
+        }
 
-        @keyframes eq { from { height: 5px; } to { height: 30px; } }
-        
-        /* Ocultar Player de YT */
-        #yt-hidden { position: absolute; left: -9999px; }
+        /* Selector de Playlists */
+        .playlist-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            width: 100%;
+            padding: 10px 0;
+        }
+
+        .playlist-selector::-webkit-scrollbar { display: none; }
+
+        .pl-card {
+            min-width: 120px;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.3s;
+            opacity: 0.6;
+        }
+
+        .pl-card:hover, .pl-card.active { opacity: 1; transform: scale(1.1); }
+
+        .pl-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            margin-bottom: 5px;
+        }
+
+        .pl-card.active img { border-color: var(--accent); box-shadow: 0 0 15px var(--accent); }
+
+        /* Reproductor */
+        .spotify-wrapper {
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            background: #000;
+            transition: box-shadow 1s ease;
+        }
+
+        .spotify-wrapper:hover { box-shadow: 0 0 40px var(--accent); }
+
+        .btn-back {
+            margin-top: 40px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.7rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover { border-color: var(--accent); color: var(--accent); }
+
     </style>
 </head>
 <body>
 
-    <div id="yt-hidden"></div>
+    <div class="main-content">
+        <div class="header">
+            <h2>NÚCLEO_MUSICAL_VIP</h2>
+            <span id="system-status" style="font-size: 10px;">ADAPTANDO ENTORNO...</span>
+        </div>
 
-    <div class="player-wrapper" id="main-bg">
-        <div class="visual-side">
-            <div class="cover-art" id="cover" style="background-image: url('https://img.youtube.com/vi/VwM2reI_D_g/maxresdefault.jpg');"></div>
-            <div class="song-info">
-                <h1 id="track-title">CONECTANDO SISTEMA</h1>
-                <p id="track-artist">INGRESA LINK DE YOUTUBE</p>
-                <div class="eq-container">
-                    <div class="eq-bar" style="animation-delay: 0.1s"></div>
-                    <div class="eq-bar" style="animation-delay: 0.3s"></div>
-                    <div class="eq-bar" style="animation-delay: 0.2s"></div>
-                    <div class="eq-bar" style="animation-delay: 0.4s"></div>
-                </div>
+        <div class="playlist-selector" id="selector">
+            <div class="pl-card active" onclick="changePL('4M7vRzXyZisD4YhG7f3iY8', 'https://i.scdn.co/image/ab67706f000000030c6a85817765f02c98492025', this)">
+                <img src="https://i.scdn.co/image/ab67706f000000030c6a85817765f02c98492025" crossorigin="anonymous">
+                <p style="font-size: 10px;">Mix VIP</p>
             </div>
-            
-            <input type="text" id="url-in" placeholder="Pega Link Aquí" style="margin-top: 20px; background: none; border: 1px solid var(--accent); color: white; padding: 10px; border-radius: 5px;">
-            <button onclick="loadSong()" style="margin-top: 10px; color: var(--accent); background: none; border: none; cursor: pointer;">[ CARGAR NÚCLEO ]</button>
-        </div>
-
-        <div class="lyrics-side" id="lyrics-container">
-            <p class="lyric-line" data-time="0">Bienvenido al Sistema</p>
-            <p class="lyric-line" data-time="5">Selecciona tu música</p>
-            <p class="lyric-line" data-time="10">VIP Experience</p>
-        </div>
-    </div>
-
-    <div class="controls-footer">
-        <div class="progress-area">
-            <span id="cur-time">0:00</span>
-            <div class="bar-bg" onclick="seek(event)">
-                <div class="bar-fill" id="progress"></div>
+            <div class="pl-card" onclick="changePL('37i9dQZF1DXcBWIGoYBM3M', 'https://i.scdn.co/image/ab67706f000000036612d1b54f676b772c7336a1', this)">
+                <img src="https://i.scdn.co/image/ab67706f000000036612d1b54f676b772c7336a1" crossorigin="anonymous">
+                <p style="font-size: 10px;">Reggaetón</p>
             </div>
-            <span id="dur-time">0:00</span>
+            <div class="pl-card" onclick="changePL('37i9dQZF1DX8f6LHDCurm5', 'https://i.scdn.co/image/ab67706f000000032b85e05df852a39281a8c903', this)">
+                <img src="https://i.scdn.co/image/ab67706f000000032b85e05df852a39281a8c903" crossorigin="anonymous">
+                <p style="font-size: 10px;">Phonk</p>
+            </div>
         </div>
-        <div class="buttons">
-            <button class="btn">⏮</button>
-            <button class="btn btn-play" id="play-btn" onclick="togglePlay()">▶</button>
-            <button class="btn">⏭</button>
-            <button class="btn" onclick="window.location.href='Menu.html'">✖</button>
+
+        <div class="spotify-wrapper" id="player-container">
+            <iframe id="sp-frame" src="https://open.spotify.com/embed/playlist/4M7vRzXyZisD4YhG7f3iY8?utm_source=generator&theme=0" width="100%" height="450" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         </div>
+
+        <a href="Menu.html" class="btn-back">SALIR DEL MODO INMERSIVO</a>
     </div>
 
     <script>
-        let player;
-        let isPlaying = false;
+        function changePL(id, imgUrl, element) {
+            // 1. Cambiar el iframe
+            document.getElementById('sp-frame').src = `https://open.spotify.com/embed/playlist/${id}?utm_source=generator&theme=0`;
+            
+            // 2. Manejar clases activas
+            document.querySelectorAll('.pl-card').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
 
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('yt-hidden', {
-                height: '0', width: '0',
-                events: { 'onStateChange': onStateChange }
-            });
-        }
+            // 3. LA MAGIA: Extraer color de la imagen
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.src = imgUrl;
 
-        function loadSong() {
-            const url = document.getElementById('url-in').value;
-            const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
-            if(id) {
-                player.loadVideoById(id);
-                document.getElementById('cover').style.background-image = `url('https://img.youtube.com/vi/${id}/maxresdefault.jpg')`;
-                // Aquí podrías cambiar el color --accent basado en la canción
-            }
-        }
-
-        function togglePlay() {
-            if(isPlaying) { player.pauseVideo(); document.getElementById('play-btn').innerText = "▶"; }
-            else { player.playVideo(); document.getElementById('play-btn').innerText = "||"; }
-            isPlaying = !isPlaying;
-        }
-
-        function onStateChange(event) {
-            if(event.data == YT.PlayerState.PLAYING) {
-                const data = player.getVideoData();
-                document.getElementById('track-title').innerText = data.title;
-                document.getElementById('track-artist').innerText = data.author;
-                updateLyrics();
-            }
-        }
-
-        // Lógica de Letras y Progreso
-        setInterval(() => {
-            if(player && player.getCurrentTime) {
-                const cur = player.getCurrentTime();
-                const dur = player.getDuration();
-                document.getElementById('progress').style.width = (cur/dur*100) + "%";
-                document.getElementById('cur-time').innerText = formatTime(cur);
-                document.getElementById('dur-time').innerText = formatTime(dur);
+            img.onload = function() {
+                const vibrant = new Vibrant(img);
+                const swatches = vibrant.swatches();
                 
-                // Sincronizar letras
-                const lines = document.querySelectorAll('.lyric-line');
-                lines.forEach(line => {
-                    if(cur >= line.getAttribute('data-time')) {
-                        lines.forEach(l => l.classList.remove('active'));
-                        line.classList.add('active');
-                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                });
-            }
-        }, 500);
-
-        function formatTime(s) {
-            const m = Math.floor(s/60);
-            const sec = Math.floor(s%60);
-            return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+                // Buscamos el color más "vivo" o el "Vibrant"
+                const targetColor = swatches['Vibrant'] ? swatches['Vibrant'].getHex() : '#ffca2c';
+                
+                // Aplicar a la variable CSS
+                document.documentElement.style.setProperty('--accent', targetColor);
+                document.getElementById('system-status').innerText = `SINCRONIZADO: ${targetColor}`;
+            };
         }
+
+        // Ejecutar la primera vez para el color inicial
+        window.onload = () => {
+            const firstImg = document.querySelector('.pl-card.active img');
+            changePL('4M7vRzXyZisD4YhG7f3iY8', firstImg.src, document.querySelector('.pl-card.active'));
+        };
     </script>
 </body>
 </html>
