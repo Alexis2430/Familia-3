@@ -3,34 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sintonía Familiar - VIP</title>
+    <title>Sintonía VIP - Sistema de Distribución</title>
     <style>
-        :root { --dorado: #ffca2c; --negro: #050505; }
-        body { 
-            background: var(--negro) url('img/Fondo.png') center/cover fixed;
-            color: white; font-family: 'Courier New', Courier, monospace;
-            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        :root {
+            --dorado: #ffca2c;
+            --dorado-glow: rgba(255, 202, 44, 0.4);
+            --negro: #050505;
         }
-        .glass-panel {
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
-            border: 1px solid var(--dorado); padding: 2rem;
-            width: 90%; max-width: 600px; margin-top: 5rem; text-align: center;
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
         }
-        .neon-text { color: var(--dorado); text-shadow: 0 0 10px var(--dorado); letter-spacing: 5px; }
-        .spotify-container { margin-top: 2rem; border: 2px solid var(--dorado); }
-        .btn-back { margin-top: 2rem; color: var(--dorado); border: 1px solid var(--dorado); padding: 10px; text-decoration: none; display: inline-block; font-size: 0.7rem; }
+
+        body {
+            background-color: var(--negro);
+            background-image: url('img/Fondo.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        /* Capa de oscuridad */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 700px;
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid var(--dorado);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 0 20px var(--dorado-glow);
+        }
+
+        .neon-text {
+            color: var(--dorado);
+            text-shadow: 0 0 10px var(--dorado);
+            letter-spacing: 5px;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        /* Ecualizador Animado */
+        .equalizer {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 40px;
+            gap: 5px;
+            margin-bottom: 2rem;
+        }
+
+        .bar {
+            width: 8px;
+            background: var(--dorado);
+            animation: bounce 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { height: 5px; }
+            to { height: 40px; }
+        }
+
+        /* Retrasos para que no se muevan todas igual */
+        .bar:nth-child(2) { animation-delay: 0.2s; }
+        .bar:nth-child(3) { animation-delay: 0.4s; }
+        .bar:nth-child(4) { animation-delay: 0.1s; }
+        .bar:nth-child(5) { animation-delay: 0.3s; }
+
+        .player-wrapper {
+            border: 2px solid var(--dorado);
+            border-radius: 12px;
+            overflow: hidden;
+            background: #181818;
+        }
+
+        .btn-back {
+            margin-top: 2rem;
+            display: inline-block;
+            color: var(--dorado);
+            text-decoration: none;
+            border: 1px solid var(--dorado);
+            padding: 10px 25px;
+            font-size: 0.8rem;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-back:hover {
+            background: var(--dorado);
+            color: black;
+            box-shadow: 0 0 15px var(--dorado);
+        }
     </style>
 </head>
 <body>
-    <div class="glass-panel">
-        <h2 class="neon-text uppercase">ESTACIÓN_MUSICAL</h2>
-        <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.6;">-- Reproduciendo los hits de la banda --</p>
+
+    <div class="container">
+        <h2 class="neon-text">Audio_Link_V2</h2>
         
-        <div class="spotify-container">
-            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM3M?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <div class="equalizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
         </div>
 
-        <a href="Menu.html" class="btn-back">REGRESAR AL MENÚ</a>
+        <p style="font-size: 0.7rem; margin-bottom: 2rem; opacity: 0.6;">
+            [ ESTADO: CONEXIÓN ESTABLE CON LA PLAYLIST FAMILIAR ]
+        </p>
+
+        <div class="player-wrapper">
+            <iframe style="border-radius:12px" 
+                src="https://open.spotify.com/embed/playlist/37i9dQZF1EIX9f9Y374Yyv?utm_source=generator&theme=0" 
+                width="100%" 
+                height="380" 
+                frameBorder="0" 
+                allowfullscreen="" 
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                loading="lazy">
+            </iframe>
+        </div>
+
+        <a href="Menu.html" class="btn-back">Regresar al Menú</a>
     </div>
+
 </body>
 </html>
