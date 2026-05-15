@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat VIP - En Vivo</title>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --dorado: #ffca2c; --negro: #050505; }
+        body { 
+            background-color: var(--negro); 
+            background-image: url('img/Fondo.png'); 
+            background-size: cover; 
+            background-attachment: fixed;
+            color: white; 
+            font-family: 'Courier New', Courier, monospace; 
+        }
+        #chat-container { height: 60vh; overflow-y: auto; }
+        .mensaje { 
+            border-left: 2px solid var(--dorado); 
+            background: rgba(255, 255, 255, 0.05); 
+            margin-bottom: 10px;
+            padding: 8px 12px;
+        }
+        .neon-text { color: var(--dorado); text-shadow: 0 0 10px rgba(255, 202, 44, 0.5); }
+        /* Scrollbar dorada */
+        #chat-container::-webkit-scrollbar { width: 4px; }
+        #chat-container::-webkit-scrollbar-thumb { background: var(--dorado); }
+    </style>
+</head>
+<body class="flex flex-col items-center p-4">
+    <div class="w-full max-w-2xl bg-black/80 backdrop-blur-md border border-[#ffca2c]/30 p-6 shadow-2xl">
+        <header class="border-b border-[#ffca2c]/30 pb-4 mb-4 flex justify-between items-center">
+            <h2 class="neon-text font-bold uppercase tracking-widest">Canal_Privado_Chat</h2>
+            <button onclick="window.location.href='Menu.html'" class="text-[10px] border border-[#ffca2c] px-2 py-1 hover:bg-[#ffca2c] hover:text-black transition-all">SALIR</button>
+        </header>
+
+        <div id="chat-container" class="mb-6 space-y-2 pr-2">
+            <p class="text-center opacity-30 text-xs">-- Iniciando conexión segura --</p>
+        </div>
+
+        <div class="flex flex-col gap-3">
+            <input type="text" id="nombre-input" placeholder="Tu Apodo..." class="bg-transparent border border-[#ffca2c]/50 p-2 text-sm focus:outline-none focus:border-[#ffca2c] text-[#ffca2c]">
+            <div class="flex gap-2">
+                <input type="text" id="mensaje-input" placeholder="Escribe un mensaje..." class="flex-1 bg-white/10 border border-white/20 p-3 text-sm focus:outline-none focus:border-[#ffca2c]">
+                <button onclick="enviarMensaje()" class="bg-[#ffca2c] text-black px-6 font-bold uppercase text-sm hover:scale-105 active:scale-95 transition-all">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN DE TU FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4mkzPcHmoaS2p6DwK3TnDjqg6R7pw9zA",
+            authDomain: "familia-vip.firebaseapp.com",
+            projectId: "familia-vip",
+            storageBucket: "familia-vip.firebasestorage.app",
+            messagingSenderId: "1085714188192",
+            appId: "1:1085714188192:web:3c7f3a4d5a58c18d4ac6c5",
+            databaseURL: "https://familia-vip-default-rtdb.firebaseio.com/"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Función para enviar
+        function enviarMensaje() {
+            const nombre = document.getElementById('nombre-input').value || "Anónimo";
+            const msgInput = document.getElementById('mensaje-input');
+            const texto = msgInput.value;
+
+            if (texto.trim() !== "") {
+                db.ref('chat').push({
+                    usuario: nombre,
+                    mensaje: texto,
+                    fecha: new Date().toLocaleTimeString()
+                });
+                msgInput.value = ""; // Limpiar input
+            }
+        }
+
+        // Detectar tecla Enter para enviar
+        document.getElementById('mensaje-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') enviarMensaje();
+        });
+
+        // Escuchar mensajes nuevos
+        db.ref('chat').on('value', (snapshot) => {
+            const container = document.getElementById('chat-container');
+            container.innerHTML = "";
+            const data = snapshot.val();
+            
+            if (data) {
+                Object.values(data).forEach(m => {
+                    container.innerHTML += `
+                        <div class="mensaje">
+                            <span class="text-[10px] text-[#ffca2c] font-bold uppercase">${m.usuario}</span>
+                            <span class="text-[9px] opacity-30 ml-2">${m.fecha}</span>
+                            <p class="text-sm mt-1 text-gray-200">${m.mensaje}</p>
+                        </div>
+                    `;
+                });
+                // Auto-scroll al último mensaje
+                container.scrollTop = container.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
