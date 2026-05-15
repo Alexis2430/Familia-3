@@ -27,12 +27,11 @@
 
         .pl-card { cursor: pointer; transition: all 0.5s ease; text-align: center; width: 140px; }
 
-        /* Estilo para las portadas que Spotify no deja cargar directo */
         .cover-box {
             width: 120px; height: 120px; border-radius: 15px; 
             background: #111; border: 2px solid rgba(255,255,255,0.1);
             display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; transition: all 0.5s ease; overflow: hidden;
+            font-size: 2.5rem; transition: all 0.5s ease;
         }
 
         .pl-card.active .cover-box { 
@@ -44,7 +43,7 @@
         .player-box { 
             width: 100%; border-radius: 25px; overflow: hidden; 
             background: #000; border: 1px solid rgba(255,255,255,0.1); 
-            min-height: 452px; box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+            min-height: 500px; box-shadow: 0 40px 100px rgba(0,0,0,0.9);
         }
 
         .btn-back { 
@@ -58,7 +57,7 @@
 <body>
 
     <div class="main-container">
-        <div class="system-label" id="status">SISTEMA_VIP_ONLINE</div>
+        <div class="system-label" id="status">SISTEMA_VIP_REPRODUCIENDO</div>
 
         <div class="playlist-nav">
             <div class="pl-card active" onclick="updateSystem('37i9dQZF1DX8f6LHDCurm5', '#E8115B', this)">
@@ -78,7 +77,7 @@
         <div class="player-box">
             <iframe id="spotify-frame" 
                 src="https://open.spotify.com/embed/playlist/37i9dQZF1DX8f6LHDCurm5?utm_source=generator&theme=0" 
-                width="100%" height="452" frameBorder="0" 
+                width="100%" height="500" frameBorder="0" 
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
                 loading="lazy">
             </iframe>
@@ -89,17 +88,17 @@
 
     <script>
         function updateSystem(id, hexColor, element) {
-            // Cambio de reproductor con el link que Spotify aprueba
+            // CAMBIO DE IFRAME A LA ESTRUCTURA CORRECTA
             const frame = document.getElementById('spotify-frame');
             frame.src = `https://open.spotify.com/embed/playlist/${id}?utm_source=generator&theme=0`;
 
-            // Quitar activo de otros
+            // Actualizar tarjetas
             document.querySelectorAll('.pl-card').forEach(c => c.classList.remove('active'));
             element.classList.add('active');
 
-            // Cambio de color neón (ya no dependemos de que Spotify nos deje leer su imagen)
+            // Cambio de color neón
             document.documentElement.style.setProperty('--accent', hexColor);
-            document.getElementById('status').innerText = `MODO: ${element.innerText.trim()}`;
+            document.getElementById('status').innerText = `MODO_ACTIVO: ${element.innerText.trim()}`;
         }
     </script>
 </body>
