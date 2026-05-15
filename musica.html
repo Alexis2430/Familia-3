@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP Music Experience - Sincronizado</title>
+    <title>VIP Music Experience</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vibrant.js/2.1.0/Vibrant.min.js"></script>
     <style>
         :root { --accent: #ffca2c; --bg-dark: #000000; }
@@ -12,22 +12,22 @@
             background-color: var(--bg-dark);
             background: radial-gradient(circle at 50% -20%, var(--accent) -150%, var(--bg-dark) 85%);
             color: white; min-height: 100vh; display: flex; flex-direction: column; align-items: center;
-            transition: background 1.2s ease; overflow: hidden;
+            transition: background 1.2s ease; overflow-x: hidden;
         }
         .main-container { width: 90%; max-width: 1000px; padding: 40px 20px; z-index: 10; display: flex; flex-direction: column; align-items: center; }
         .system-label { font-size: 0.6rem; letter-spacing: 7px; color: var(--accent); text-shadow: 0 0 15px var(--accent); margin-bottom: 30px; text-transform: uppercase; font-weight: 900; }
-        .playlist-nav { display: flex; gap: 20px; margin-bottom: 40px; width: 100%; justify-content: center; }
+        .playlist-nav { display: flex; gap: 20px; margin-bottom: 40px; width: 100%; justify-content: center; flex-wrap: wrap; }
         .pl-card { cursor: pointer; transition: all 0.5s ease; text-align: center; width: 140px; }
-        .pl-card img { width: 120px; height: 120px; border-radius: 15px; border: 2px solid rgba(255,255,255,0.1); filter: grayscale(40%); }
-        .pl-card.active img { filter: grayscale(0%); border-color: var(--accent); box-shadow: 0 0 30px var(--accent); transform: translateY(-10px) scale(1.1); }
-        .player-box { width: 100%; border-radius: 25px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 40px 100px rgba(0,0,0,0.9); }
-        .btn-back { margin-top: 50px; text-decoration: none; color: rgba(255,255,255,0.4); font-size: 0.6rem; letter-spacing: 3px; border: 1px solid rgba(255,255,255,0.1); padding: 12px 30px; border-radius: 50px; }
+        .pl-card img { width: 120px; height: 120px; border-radius: 15px; border: 2px solid rgba(255,255,255,0.1); }
+        .pl-card.active img { border-color: var(--accent); box-shadow: 0 0 30px var(--accent); transform: translateY(-10px) scale(1.1); }
+        .player-box { width: 100%; border-radius: 25px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.1); min-height: 450px; }
+        .btn-back { margin-top: 50px; text-decoration: none; color: white; font-size: 0.6rem; letter-spacing: 3px; border: 1px solid var(--accent); padding: 12px 30px; border-radius: 50px; }
     </style>
 </head>
 <body>
 
     <div class="main-container">
-        <div class="system-label" id="status">INICIALIZANDO_SISTEMA_VIP</div>
+        <div class="system-label" id="status">ESTADO: SISTEMA_OPERATIVO</div>
 
         <div class="playlist-nav">
             <div class="pl-card active" onclick="updateSystem('37i9dQZF1DX8f6LHDCurm5', 'https://i.scdn.co/image/ab67706f000000032b85e05df852a39281a8c903', this)">
@@ -47,45 +47,39 @@
         <div class="player-box">
             <iframe id="spotify-frame" 
                 src="https://open.spotify.com/embed/playlist/37i9dQZF1DX8f6LHDCurm5?utm_source=generator&theme=0" 
-                width="100%" height="450" frameBorder="0" allowfullscreen="" 
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+                width="100%" height="452" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
             </iframe>
         </div>
 
-        <a href="Menu.html" class="btn-back">[ VOLVER AL NÚCLEO ]</a>
+        <a href="Menu.html" class="btn-back">REGRESAR AL MENÚ</a>
     </div>
 
     <script>
         function updateSystem(id, imgUrl, element) {
+            // Cambio de iframe con HTTPS obligatorio
             const frame = document.getElementById('spotify-frame');
             frame.src = `https://open.spotify.com/embed/playlist/${id}?utm_source=generator&theme=0`;
 
             document.querySelectorAll('.pl-card').forEach(c => c.classList.remove('active'));
             element.classList.add('active');
 
-            // Usamos un proxy para evitar el error de la consola (CORS)
-            const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(imgUrl);
+            // Intento de color neón (con manejo de errores para que no se trabe)
             const img = new Image();
             img.crossOrigin = "Anonymous";
-            img.src = proxyUrl;
+            img.src = 'https://corsproxy.io/?' + encodeURIComponent(imgUrl);
 
             img.onload = function() {
                 try {
                     const vibrant = new Vibrant(img);
                     const swatches = vibrant.swatches();
-                    const newAccent = swatches['Vibrant'] ? swatches['Vibrant'].getHex() : '#ffca2c';
-                    document.documentElement.style.setProperty('--accent', newAccent);
-                    document.getElementById('status').innerText = `MODO_ACTIVO: ${element.innerText.trim()}`;
+                    const color = swatches['Vibrant'] ? swatches['Vibrant'].getHex() : '#ffca2c';
+                    document.documentElement.style.setProperty('--accent', color);
+                    document.getElementById('status').innerText = `MODO: ${element.innerText.trim()}`;
                 } catch(e) {
-                    console.log("Error extrayendo color, usando default");
+                    console.log("No se pudo extraer el color");
                 }
             };
         }
-
-        window.onload = () => {
-            const active = document.querySelector('.pl-card.active');
-            updateSystem('37i9dQZF1DX8f6LHDCurm5', active.querySelector('img').src, active);
-        };
     </script>
 </body>
 </html>
