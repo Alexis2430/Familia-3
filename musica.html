@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sintonía Familiar - VIP</title>
+    <style>
+        :root { --dorado: #ffca2c; --negro: #050505; }
+        body { 
+            background: var(--negro) url('img/Fondo.png') center/cover fixed;
+            color: white; font-family: 'Courier New', Courier, monospace;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            border: 1px solid var(--dorado); padding: 2rem;
+            width: 90%; max-width: 600px; margin-top: 5rem; text-align: center;
+        }
+        .neon-text { color: var(--dorado); text-shadow: 0 0 10px var(--dorado); letter-spacing: 5px; }
+        .spotify-container { margin-top: 2rem; border: 2px solid var(--dorado); }
+        .btn-back { margin-top: 2rem; color: var(--dorado); border: 1px solid var(--dorado); padding: 10px; text-decoration: none; display: inline-block; font-size: 0.7rem; }
+    </style>
+</head>
+<body>
+    <div class="glass-panel">
+        <h2 class="neon-text uppercase">ESTACIÓN_MUSICAL</h2>
+        <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.6;">-- Reproduciendo los hits de la banda --</p>
+        
+        <div class="spotify-container">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM3M?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+
+        <a href="Menu.html" class="btn-back">REGRESAR AL MENÚ</a>
+    </div>
+</body>
+</html>
