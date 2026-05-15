@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papu-Calendario</title>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --dorado: #ffca2c; --negro: #050505; }
+        body { 
+            background-color: var(--negro); 
+            background-image: url('img/Fondo.png'); 
+            background-size: cover; 
+            background-attachment: fixed;
+            color: white; 
+            font-family: 'Courier New', Courier, monospace; 
+        }
+        .neon-border { border: 1px solid rgba(255, 202, 44, 0.3); box-shadow: 0 0 15px rgba(255, 202, 44, 0.1); }
+        .neon-text { color: var(--dorado); text-shadow: 0 0 10px rgba(255, 202, 44, 0.5); }
+        .event-card { background: rgba(255, 255, 255, 0.05); border-left: 3px solid var(--dorado); }
+    </style>
+</head>
+<body class="flex flex-col items-center p-4 min-h-screen">
+    <div class="w-full max-w-2xl bg-black/85 backdrop-blur-md p-6 neon-border">
+        <header class="flex justify-between items-center border-b border-[#ffca2c]/30 pb-4 mb-6">
+            <h2 class="neon-text font-bold uppercase tracking-tighter">Agenda_Compartida_VIP</h2>
+            <button onclick="window.location.href='Menu.html'" class="text-[10px] border border-[#ffca2c] px-3 py-1 hover:bg-[#ffca2c] hover:text-black transition-all">VOLVER</button>
+        </header>
+
+        <div class="space-y-4 mb-8 bg-white/5 p-4 rounded">
+            <h3 class="text-xs uppercase text-[#ffca2c] mb-2">Nuevo Registro:</h3>
+            <input type="text" id="titulo" placeholder="¿Qué evento es? (Ej: Cumple Ari)" class="w-full bg-transparent border border-white/20 p-2 text-sm focus:border-[#ffca2c] outline-none">
+            <div class="flex gap-2">
+                <input type="date" id="fecha" class="flex-1 bg-transparent border border-white/20 p-2 text-sm focus:border-[#ffca2c] outline-none text-white">
+                <select id="tipo" class="bg-black border border-white/20 p-2 text-sm text-[#ffca2c]">
+                    <option value="Celebración">🎉 Celebración</option>
+                    <option value="Salida">🚀 Salida</option>
+                    <option value="Importante">⚠️ Importante</option>
+                </select>
+            </div>
+            <button onclick="registrarEvento()" class="w-full bg-[#ffca2c] text-black font-bold py-2 text-sm uppercase hover:scale-[1.02] active:scale-95 transition-all">Registrar en el Sistema</button>
+        </div>
+
+        <h3 class="text-xs uppercase text-[#ffca2c] mb-4">Próximos Eventos:</h3>
+        <div id="lista-eventos" class="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+            <p class="text-center opacity-20 text-xs">Cargando Memoria Guinda...</p>
+        </div>
+    </div>
+
+    <script>
+        // TU CONFIGURACIÓN DE FIREBASE (La misma que el chat)
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4mkzPcHmoaS2p6DwK3TnDjqg6R7pw9zA",
+            authDomain: "familia-vip.firebaseapp.com",
+            projectId: "familia-vip",
+            storageBucket: "familia-vip.firebasestorage.app",
+            messagingSenderId: "1085714188192",
+            appId: "1:1085714188192:web:3c7f3a4d5a58c18d4ac6c5",
+            databaseURL: "https://familia-vip-default-rtdb.firebaseio.com/"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Función para guardar
+        function registrarEvento() {
+            const titulo = document.getElementById('titulo').value;
+            const fecha = document.getElementById('fecha').value;
+            const tipo = document.getElementById('tipo').value;
+
+            if (titulo && fecha) {
+                db.ref('calendario').push({
+                    titulo: titulo,
+                    fecha: fecha,
+                    tipo: tipo,
+                    timestamp: Date.now()
+                });
+                document.getElementById('titulo').value = "";
+                document.getElementById('fecha').value = "";
+            } else {
+                alert("Llena los campos, bro.");
+            }
+        }
+
+        // Función para leer y mostrar
+        db.ref('calendario').orderByChild('fecha').on('value', (snapshot) => {
+            const container = document.getElementById('lista-eventos');
+            container.innerHTML = "";
+            const data = snapshot.val();
+
+            if (data) {
+                // Convertir a array para ordenar por fecha
+                const eventos = Object.values(data).sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+                
+                eventos.forEach(ev => {
+                    container.innerHTML += `
+                        <div class="event-card p-3 flex justify-between items-center animate-fade-in">
+                            <div>
+                                <p class="text-sm font-bold text-white">${ev.titulo}</p>
+                                <p class="text-[10px] text-[#ffca2c] uppercase">${ev.tipo}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs font-mono">${ev.fecha}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                container.innerHTML = "<p class='text-center opacity-30 text-xs'>No hay planes aún. ¡ARMATE UNO!</p>";
+            }
+        });
+    </script>
+</body>
+</html>
