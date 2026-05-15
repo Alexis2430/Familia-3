@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Principal</title>
+    <title>Sistema de Distribución - VIP</title>
     <style>
         :root {
             --dorado: #ffca2c;
@@ -21,7 +21,6 @@
 
         body {
             background-color: var(--dark-bg);
-            /* Fondo consistente con el resto de la página */
             background-image: url('img/Fondo.png');
             background-size: cover;
             background-position: center;
@@ -35,7 +34,7 @@
             overflow-x: hidden;
         }
 
-        /* Capa de oscuridad para que el fondo no sature */
+        /* Capa de oscuridad para que el texto resalte sobre el fondo */
         body::before {
             content: '';
             position: fixed;
@@ -43,7 +42,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.75);
             z-index: 0;
         }
 
@@ -98,11 +97,6 @@
             font-size: 3.5rem;
             margin-bottom: 20px;
             filter: drop-shadow(0 0 10px var(--dorado-glow));
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover .card-icon {
-            transform: scale(1.1);
         }
 
         .card-title {
@@ -111,7 +105,6 @@
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 3px;
-            transition: 0.3s;
         }
 
         .card:hover .card-title {
@@ -119,26 +112,34 @@
             text-shadow: 0 0 8px var(--dorado);
         }
 
-        /* Scanlines doradas muy tenues */
+        /* Scanlines estéticas */
         .scanlines {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(
-                rgba(18, 16, 16, 0) 50%,
-                rgba(0, 0, 0, 0.1) 50%
-            );
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
             background-size: 100% 4px;
             pointer-events: none;
             z-index: 100;
-            opacity: 0.5;
+            opacity: 0.4;
         }
 
-        @media (max-width: 600px) {
-            header h2 { font-size: 1.8rem; letter-spacing: 4px; }
-            .menu-grid { grid-template-columns: 1fr; }
+        .btn-back {
+            margin-top: 3rem;
+            z-index: 10;
+            color: var(--dorado);
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--dorado);
+            padding: 10px 20px;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover {
+            background: var(--dorado);
+            color: black;
         }
     </style>
 </head>
@@ -147,7 +148,7 @@
     <div class="scanlines"></div>
 
     <header>
-        <h2>SISTEMA DE DISTRIBUCION</h2>
+        <h2>SISTEMA DE DISTRIBUCIÓN</h2>
     </header>
 
     <div class="menu-grid">
@@ -172,22 +173,22 @@
         </a>
     </div>
 
+    <a href="index.html" class="btn-back">SALIR DEL SISTEMA</a>
+
     <script>
+        // Efecto de sonido al pasar el mouse por las tarjetas
         const cards = document.querySelectorAll('.card');
         cards.forEach(card => {
             card.addEventListener('mouseenter', () => {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                
                 osc.type = 'triangle';
                 osc.frequency.setValueAtTime(220, audioCtx.currentTime); 
-                gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-                
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.1);
             });
